@@ -1,0 +1,74 @@
+---
+import { profile } from '../data/portfolio';
+---
+
+<section class="intro" id="expertise" aria-labelledby="intro-title">
+	<p class="section-label">{profile.name} / Engineering</p>
+	<h2 id="intro-title">
+		{profile.roles.map((role, index) => (
+			<Fragment>{role.replace(/Engineer$/, 'engineering.')}{index < profile.roles.length - 1 && <br />}</Fragment>
+		))}
+	</h2>
+	<a href={"mailto:" + profile.email}>{profile.email} <span aria-hidden="true">↗</span></a>
+</section>
+
+<style>
+	.intro {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		gap: 48px;
+		padding: 110px 8vw 130px;
+		border-top: 1px solid var(--color-border);
+	}
+	.section-label {
+		margin: 8px 0 0;
+		font-size: 11px;
+		line-height: 1.5;
+		letter-spacing: .08em;
+		text-transform: uppercase;
+		color: var(--color-muted);
+	}
+	h2 {
+		margin: 0;
+		font-size: clamp(28px,3.8vw,60px);
+		line-height: 1.15;
+		font-weight: 500;
+		letter-spacing: -.055em;
+	}
+	.intro>a {
+		grid-column: 2;
+		justify-self: start;
+		color: var(--color-text);
+		text-decoration: none;
+		font-size: 14px;
+	}
+	.intro>a span {
+		margin-left: 16px;
+	}
+	a:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 6px;
+	}
+	@media (max-width:600px) {
+		.intro {
+			grid-template-columns: 1fr;
+			padding: 52px 20px 64px;
+			gap: 24px;
+		}
+		.section-label {
+			margin: 0;
+			font-size: 10px;
+		}
+		h2 {
+			font-size: clamp(22px,6.8vw,40px);
+			line-height: 1.2;
+		}
+		.intro>a {
+			grid-column: 1;
+			display: flex;
+			align-items: center;
+			min-height: 44px;
+			font-size: 13px;
+		}
+	}
+</style>

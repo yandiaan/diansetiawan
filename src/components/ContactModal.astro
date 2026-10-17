@@ -1,0 +1,476 @@
+---
+import { profile } from '../data/portfolio';
+import EnquirySelect from './EnquirySelect.astro';
+import ArrowIcon from './icons/ArrowIcon.astro';
+const email = profile.email;
+---
+
+<dialog id="contact-dialog" aria-labelledby="contact-title" data-email={email}>
+	<div class="contact-panel">
+		<div class="contact-header">
+			<span>Contact</span>
+			<button class="close-contact" type="button" aria-label="Close contact form" autofocus>
+				<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" d="m11 21.5 5.25-5.25M21.5 11l-5.25 5.25m0 0 5.25 5.25L11 11" /></svg>
+			</button>
+		</div>
+		<form class="contact-form">
+			<div class="contact-intro">
+				<h2 id="contact-title">Let’s talk...</h2>
+				<div class="contact-details">
+					<div><span class="detail-label">General enquiries</span><a href={`mailto:${email}`}>{email}</a></div>
+					<div>
+						<span class="detail-label">Expertise</span>
+						<span>{profile.roles.map((role, index) => (
+							<Fragment>{role.replace(/Engineer$/, 'Engineering')}{index < profile.roles.length - 1 && <br />}</Fragment>
+						))}</span>
+					</div>
+				</div>
+			</div>
+			<div class="form-fields">
+				<div class="form-row">
+					<label for="contact-name"><span class="field-number">01</span>Name*</label>
+					<input id="contact-name" name="name" autocomplete="name" placeholder="What’s your name?" required maxlength="120" />
+				</div>
+				<div class="form-row">
+					<label for="contact-email"><span class="field-number">02</span>Email address*</label>
+					<input id="contact-email" name="email" type="email" autocomplete="email" placeholder="What’s your email?" required maxlength="254" />
+				</div>
+				<div class="form-row">
+					<label for="contact-subject"><span class="field-number">03</span>Subject*</label>
+					<input id="contact-subject" name="subject" placeholder="What are you working on?" required maxlength="200" />
+				</div>
+				<div class="form-row">
+					<label id="contact-enquiry-label" for="contact-enquiry"><span class="field-number">04</span>Where to*</label>
+					<EnquirySelect />
+				</div>
+				<div class="form-row message-row">
+					<label for="contact-message"><span class="field-number">05</span>Message*</label>
+					<div class="message-editor">
+						<textarea id="contact-message" name="message" placeholder="Type your message here" rows="3" required maxlength="5000" aria-describedby="message-count"></textarea>
+						<div class="message-meta"><output id="message-count" for="contact-message">0 / 5,000</output></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-footer">
+				<p id="contact-hint">Opens your email app with a draft addressed to Dian.</p>
+				<button class="send-button" type="submit" aria-describedby="contact-hint"><span>Send message</span><span class="send-arrow" aria-hidden="true">{[0, 1].map(() => <ArrowIcon />)}</span></button>
+			</div>
+		</form>
+	</div>
+</dialog>
+
+<script>
+	import { mountComponents } from '../scripts/shared/mount';
+	import { initContactModal } from '../scripts/contact-modal';
+	mountComponents<HTMLDialogElement>('#contact-dialog', initContactModal, import.meta.hot);
+</script>
+
+<style>
+	dialog {
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		margin: 0;
+		padding: 20px;
+		border: 0;
+		background: var(--color-overlay);
+		backdrop-filter: blur(8px);
+		color: var(--color-text);
+		opacity: 0;
+		transition: opacity 250ms linear;
+	}
+	dialog[open] {
+		display: grid;
+		place-items: center;
+	}
+	dialog::backdrop {
+		background: transparent;
+	}
+	dialog.is-visible {
+		opacity: 1;
+	}
+	.contact-panel {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 944px;
+		max-height: calc(100dvh - 40px);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+		scrollbar-color: #555550 transparent;
+		border-radius: 4px;
+		background: var(--color-surface);
+		opacity: 0;
+		transform: scale(.95);
+		transform-origin: center;
+		transition: transform 300ms cubic-bezier(.66,.01,.12,.98),opacity 300ms cubic-bezier(.66,.01,.12,.98);
+	}
+	.is-visible .contact-panel {
+		opacity: 1;
+		transform: scale(1);
+	}
+	button,input,textarea {
+		font: inherit;
+		color: inherit;
+	}
+	button {
+		cursor: pointer;
+	}
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.contact-header {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		display: flex;
+		flex-shrink: 0;
+		justify-content: space-between;
+		align-items: center;
+		min-height: 45px;
+		padding: 6px 6px 6px 16px;
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
+		font-size: 14px;
+		font-weight: 500;
+		letter-spacing: -.04em;
+	}
+	.close-contact {
+		display: grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		border: 0;
+		border-radius: 2px;
+		background: var(--color-control);
+		transition: background-color 150ms;
+	}
+	.close-contact svg {
+		width: 32px;
+		height: 32px;
+	}
+	.contact-form {
+		display: flex;
+		flex-direction: column;
+		padding: 48px 32px 24px;
+	}
+	.contact-intro {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 40px;
+		margin-bottom: 64px;
+	}
+	h2 {
+		margin: 0;
+		font-size: 48px;
+		line-height: .98;
+		font-weight: 500;
+		letter-spacing: -.06em;
+	}
+	.contact-details {
+		display: flex;
+		gap: 32px;
+		font-size: 12px;
+		line-height: 1.6;
+		font-weight: 500;
+	}
+	.contact-details>div {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	.detail-label {
+		color: var(--color-muted);
+	}
+	.contact-details a {
+		width: fit-content;
+	}
+	.form-row {
+		display: grid;
+		grid-template-columns: 212px minmax(0,1fr);
+		align-items: center;
+		min-height: 54px;
+		border-top: 1px solid var(--color-border);
+		transition: border-color 180ms;
+	}
+	.form-row:focus-within {
+		border-top-color: rgb(242 241 237 / .5);
+	}
+	label {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 16px;
+		line-height: 1.2;
+		letter-spacing: -.04em;
+		font-weight: 500;
+	}
+	.field-number {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 31px;
+		height: 21px;
+		border: 1.5px solid currentColor;
+		border-radius: 999px;
+		font-size: 15px;
+		line-height: 1;
+		letter-spacing: -.05em;
+	}
+	input,textarea {
+		display: block;
+		width: 100%;
+		min-width: 0;
+		border: 0;
+		border-radius: 0;
+		padding: 16px 0;
+		outline: none;
+		box-shadow: none;
+		background: transparent;
+		caret-color: var(--color-text);
+		font-size: 18px;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: -.035em;
+	}
+	input:focus,input:active,textarea:focus,textarea:active {
+		outline: none;
+		border: 0;
+		box-shadow: none;
+	}
+	input:autofill {
+		-webkit-text-fill-color: var(--color-text);
+		box-shadow: 0 0 0 100px var(--color-surface) inset;
+	}
+	input::placeholder,textarea::placeholder {
+		color: var(--color-muted);
+		opacity: 1;
+	}
+	.message-row {
+		align-items: start;
+	}
+	.message-row label {
+		padding-top: 16px;
+	}
+	.message-editor {
+		min-width: 0;
+	}
+	textarea {
+		min-height: 112px;
+		max-height: 288px;
+		resize: none;
+		overflow-y: hidden;
+		scrollbar-width: thin;
+		scrollbar-color: #555 transparent;
+	}
+	.message-meta {
+		display: flex;
+		justify-content: flex-end;
+		padding: 4px 0 12px;
+		color: var(--color-muted);
+		font-size: 10px;
+		line-height: 1.4;
+		font-variant-numeric: tabular-nums;
+	}
+	.form-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		margin-top: 32px;
+		padding-top: 24px;
+		border-top: 1px solid var(--color-border);
+	}
+	.form-footer p {
+		margin: 0;
+		max-width: 28em;
+		color: var(--color-muted);
+		font-size: 12px;
+		line-height: 1.5;
+	}
+	.send-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 32px;
+		flex-shrink: 0;
+		min-height: 48px;
+		padding: 14px 18px;
+		border: 0;
+		border-radius: 2px;
+		background: var(--color-text);
+		color: var(--color-bg);
+		font-size: 16px;
+		line-height: 1;
+		letter-spacing: -.04em;
+	}
+	.send-arrow {
+		position: relative;
+		width: 11px;
+		height: 8px;
+		overflow: hidden;
+	}
+	.send-arrow svg {
+		position: absolute;
+		inset: 0;
+		width: 11px;
+		height: 8px;
+		transition: transform 400ms cubic-bezier(.66,.01,.12,.98);
+	}
+	.send-arrow svg:nth-child(2) {
+		transform: translateX(-150%) scale(0);
+	}
+	a:focus-visible,button:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 3px;
+	}
+	@media (hover:hover) and (pointer:fine) {
+		.close-contact:hover {
+			background: var(--color-control-hover);
+		}
+		.contact-details a:hover {
+			text-decoration: underline;
+			text-underline-offset: 3px;
+		}
+		.send-button:hover svg:first-child {
+			transform: translateX(150%) scale(0);
+		}
+		.send-button:hover svg:nth-child(2) {
+			transform: translateX(0) scale(1);
+		}
+	}
+	@media (min-width:1024px) and (min-height:880px) {
+		.contact-panel {
+			min-height: 836px;
+		}
+		.contact-form {
+			flex-grow: 1;
+		}
+		.form-footer {
+			margin-top: auto;
+		}
+	}
+	@media (max-width:1023px) {
+		dialog {
+			padding: 16px;
+		}
+		.contact-panel {
+			max-height: calc(100dvh - 32px);
+		}
+		.contact-form {
+			padding: 64px 16px 40px;
+		}
+		h2 {
+			font-size: 32px;
+			line-height: 1.1;
+		}
+		.contact-intro {
+			flex-direction: column;
+			gap: 24px;
+			margin-bottom: 40px;
+		}
+		.contact-details {
+			flex-wrap: wrap;
+			gap: 24px;
+		}
+		.form-row {
+			grid-template-columns: 180px minmax(0,1fr);
+		}
+	}
+	@media (max-width:600px) {
+		dialog {
+			padding: calc(10px + env(safe-area-inset-top,0px)) 10px calc(10px + env(safe-area-inset-bottom,0px));
+		}
+		.contact-panel {
+			max-height: calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+		}
+		.contact-header {
+			min-height: 56px;
+			padding: 6px 6px 6px 20px;
+		}
+		.close-contact {
+			width: 44px;
+			height: 44px;
+		}
+		.contact-form {
+			padding: 28px 20px 24px;
+		}
+		h2 {
+			font-size: 36px;
+		}
+		.contact-intro {
+			gap: 20px;
+			margin-bottom: 28px;
+		}
+		.contact-details {
+			font-size: 12px;
+		}
+		.contact-details>div {
+			gap: 4px;
+		}
+		.contact-details>div + div {
+			display: none;
+		}
+		.contact-details a {
+			display: flex;
+			align-items: center;
+			min-height: 44px;
+			font-size: 14px;
+		}
+		.form-row {
+			grid-template-columns: 1fr;
+			padding-block: 12px;
+			gap: 6px;
+		}
+		label {
+			gap: 7px;
+			font-size: 14px;
+		}
+		.field-number {
+			width: 27px;
+			height: 19px;
+			font-size: 12px;
+		}
+		input,textarea {
+			padding: 10px 0;
+			font-size: 16px;
+		}
+		input {
+			min-height: 44px;
+		}
+		.message-row label {
+			padding-top: 0;
+		}
+		.message-meta {
+			padding-bottom: 2px;
+			font-size: 11px;
+		}
+		.form-footer {
+			align-items: stretch;
+			flex-direction: column;
+			margin-top: 16px;
+			padding-top: 20px;
+			gap: 16px;
+		}
+		.send-button {
+			width: 100%;
+			min-height: 48px;
+		}
+	}
+	@media (prefers-reduced-motion:reduce) {
+		dialog,.contact-panel,.send-arrow svg,.form-row {
+			transition: none;
+		}
+		.contact-panel {
+			transform: none;
+		}
+	}
+</style>

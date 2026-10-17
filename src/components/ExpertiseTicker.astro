@@ -1,0 +1,128 @@
+---
+import { profile } from '../data/portfolio';
+import ArrowIcon from './icons/ArrowIcon.astro';
+const roles = profile.roles;
+---
+
+<div class="menu-footer">
+	<p class="ticker-label"><span aria-hidden="true"></span>Areas of expertise</p>
+	<div class="ticker" aria-label="Areas of expertise">
+		<div class="ticker-track">
+			{[0, 1].map((copy) => (
+				<div class="ticker-copy" aria-hidden={copy === 1 ? 'true' : undefined} inert={copy === 1}>
+					{roles.map((role, index) => (
+						<a class={`expertise-card card-${index}`} href="#expertise" draggable="false">
+							<span class="card-kicker">Expertise <span>0{index + 1}</span></span>
+							<span class="card-title">{role}</span>
+							<ArrowIcon />
+						</a>
+					))}
+				</div>
+			))}
+		</div>
+	</div>
+</div>
+
+<script>
+	import { mountComponents } from '../scripts/shared/mount';
+	import { initExpertiseTicker } from '../scripts/expertise-ticker';
+	mountComponents('.ticker', initExpertiseTicker, import.meta.hot);
+</script>
+
+<style>
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.menu-footer {
+		border-top: 1px solid var(--color-border);
+		padding-bottom: 12px;
+	}
+	.ticker-label {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 0 16px;
+		margin: 24px 0;
+		font-size: 14px;
+		line-height: 1;
+		font-weight: 500;
+		letter-spacing: -.04em;
+	}
+	.ticker-label>span {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: currentColor;
+	}
+	.ticker {
+		overflow: hidden;
+		cursor: grab;
+		touch-action: pan-y;
+		user-select: none;
+	}
+	.ticker:active {
+		cursor: grabbing;
+	}
+	.ticker-track,.ticker-copy {
+		display: flex;
+		width: max-content;
+	}
+	.ticker-copy {
+		gap: 10px;
+		padding-right: 10px;
+	}
+	.expertise-card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 274px;
+		height: 240px;
+		padding: 16px;
+		flex-shrink: 0;
+		border-radius: 4px;
+	}
+	.card-0 {
+		background: #30332f;
+	}
+	.card-1 {
+		background: #292e31;
+		color: #f7f1e9;
+	}
+	.card-2 {
+		background: #343129;
+		color: #f7f1e9;
+	}
+	.card-kicker {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 16px;
+		font-size: 12px;
+	}
+	.card-title {
+		max-width: 8em;
+		font-size: 28px;
+		line-height: 1.05;
+		letter-spacing: -.055em;
+		font-weight: 500;
+	}
+	.expertise-card>svg {
+		width: 16px;
+		height: 12px;
+		margin-top: auto;
+		align-self: flex-end;
+	}
+	@media (max-width:600px) {
+		.ticker-label {
+			margin: 20px 0;
+			font-size: 12px;
+		}
+		.expertise-card {
+			width: 220px;
+			height: 180px;
+		}
+		.card-title {
+			font-size: 24px;
+		}
+	}
+</style>
