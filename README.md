@@ -1,46 +1,23 @@
-# Astro Starter Kit: Basics
+# Dian Setiawan portfolio
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+Portfolio built with Astro, TypeScript, and scoped CSS.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Development
 
-## 🚀 Project Structure
+Use Node.js 22.12 or newer. Install dependencies with `npm install`.
 
-Inside of your Astro project, you'll see the following folders and files:
+| Command | Purpose |
+| --- | --- |
+| `npm run dev -- --background` | Start the background development server |
+| `npm run astro -- dev status` | Check server status |
+| `npm run astro -- dev logs` | Read server logs |
+| `npm run astro -- dev stop` | Stop the server |
+| `npm run build` | Build the static site into dist |
+| `npm run preview` | Preview the production build |
+| `node --experimental-strip-types --test tests/*.test.mjs` | Run regression tests |
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+## Editing the portfolio
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Profile details, roles, navigation, and enquiry options live in `src/data/portfolio.ts`. Page composition lives in `src/pages/index.astro`. Components retain their scoped styles; browser behavior lives in typed initializers under `src/scripts/`.
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+See [architecture](docs/architecture.md) for component boundaries, cleanup behavior, and checks. Image attribution is recorded in [asset credits](docs/asset-credits.md).
