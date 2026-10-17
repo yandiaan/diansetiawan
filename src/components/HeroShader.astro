@@ -1,0 +1,33 @@
+<div class="hero-shader" aria-hidden="true">
+	<canvas data-hero-shader></canvas>
+</div>
+
+<script>
+	import { mountComponents } from '../scripts/shared/mount';
+	import { initHeroShader } from '../scripts/hero-shader';
+	mountComponents<HTMLCanvasElement>('[data-hero-shader]', initHeroShader, import.meta.hot);
+</script>
+
+<style>
+	.hero-shader {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		overflow: hidden;
+		background: linear-gradient(145deg, #1c1e1d, #141414 65%);
+		mask-image: linear-gradient(to bottom, white 80%, transparent 100%);
+	}
+	canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		filter: blur(18px);
+		transform: scale(1.08);
+		transition: opacity 1600ms cubic-bezier(.23,1,.32,1);
+	}
+	canvas[data-ready] { opacity: 1; }
+	@media (max-width: 600px) { canvas { filter: blur(12px); } }
+	@media (prefers-reduced-motion: reduce) { canvas { transition: none; } }
+</style>

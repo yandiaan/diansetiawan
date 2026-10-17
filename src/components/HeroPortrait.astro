@@ -1,0 +1,55 @@
+---
+const { class: className, ...attributes } = Astro.props;
+---
+
+<span class:list={['hero-visual', className]} data-hero-portrait {...attributes}>
+	<span class="portrait-frame">
+		<img src="/images/dian-setiawan.jpg" alt="" width="800" height="800" fetchpriority="high" draggable="false" />
+		<span class="portrait-reflection" aria-hidden="true"></span>
+	</span>
+</span>
+
+<script>
+	import { mountComponents } from '../scripts/shared/mount';
+	import { initHeroPortrait } from '../scripts/hero-portrait';
+	mountComponents<HTMLElement>('[data-hero-portrait]', initHeroPortrait, import.meta.hot);
+</script>
+
+<style>
+	.hero-visual {
+		isolation: isolate;
+		transform-origin: center;
+	}
+	.portrait-frame {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		display: block;
+		overflow: hidden;
+		background: #61666d;
+		box-shadow: 0 8px 28px rgb(6 6 6 / .18);
+	}
+	img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 22%;
+		transform: scale(1.16);
+	}
+	.portrait-reflection {
+		position: absolute;
+		inset: -30%;
+		pointer-events: none;
+		opacity: .08;
+		background: linear-gradient(115deg, transparent 26%, rgb(255 255 255 / .6) 48%, transparent 69%);
+		mix-blend-mode: soft-light;
+	}
+	.portrait-frame::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		box-shadow: inset 0 0 0 1px rgb(242 241 237 / .12);
+	}
+</style>
